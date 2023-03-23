@@ -37,7 +37,7 @@ class TdInput {
     }
 
     getValue() {
-        return String_to_float(this.value);
+        return stringByFloat(this.value);
     }
 
     setValueFloat(float, limit = false) {
@@ -82,7 +82,6 @@ function inputSanitizeFloat(event) {
 }
 
 function keyInputFloat(event) {
-    console.log(event);
     if (['deleteContentBackward', 'deleteContentForward'].includes(event.inputType)) return;
     if (['insertLineBreak'].includes(event.inputType)) return focarInputPosterior(event);
     let qtPonto = countChar(event.target.value, '.');
