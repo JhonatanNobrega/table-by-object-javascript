@@ -2,20 +2,20 @@ import { tdText } from './TdText.js';
 import { tdInput } from './TdInput.js';
 import { tdButton } from './TdButton.js';
 
-export class Tabela {
+export class Table {
 
-  inputsCabecalho = []
+  inputsTHead = []
 
   constructor({ obj, elemento }) {
-    this.tabela = document.createElement("table");
-    this.tabela.classList.add("table");
-    this.tabela.appendChild(this._criarCabecalho(obj));
-    this.tabela.appendChild(document.createElement('tbody'));
-    this.tabela.appendChild(document.createElement('tfoot'));
-    elemento.appendChild(this.tabela);
+    this.table = document.createElement("table");
+    this.table.classList.add("table");
+    this.table.appendChild(this._criateTHead(obj));
+    this.table.appendChild(document.createElement('tbody'));
+    this.table.appendChild(document.createElement('tfoot'));
+    elemento.appendChild(this.table);
   }
 
-  _criarCabecalho({ prefix, limiteColuna, cabecalho }) {
+  _criateTHead({ prefix, limiteColuna, cabecalho }) {
     if (!limiteColuna || !cabecalho || !prefix) {
       new Error('Favor definir "limiteColuna", "cabecalho", "prefix"');
     }
@@ -28,9 +28,9 @@ export class Tabela {
       tdReverse.forEach((tdData) => {
         let th = document.createElement("th");
         if (typeof tdData.text === 'string') tdText.handle({ td: th, tdData });
-        if (typeof tdData.input === 'string') tdInput.handle({ prefix, td: th, tdData, inputs: this.inputsCabecalho });
+        if (typeof tdData.input === 'string') tdInput.handle({ prefix, td: th, tdData, inputs: this.inputsTHead });
         if (typeof tdData.button === 'string') tdButton.handle({ td: th, tdData });
-        this._criarConfig({ td: th, tdData });
+        this._criateConfig({ td: th, tdData });
         tr.prepend(th);
       });
 
@@ -38,11 +38,11 @@ export class Tabela {
     return thead;
   }
 
-  criarCorpo({ prefix, corpo }) {
+  criateTBody({ prefix, corpo }) {
     if (!corpo || !prefix) {
       new Error('Favor definir "corpo", "prefix"');
     }
-    let tbody = this.tabela.querySelector('tbody');
+    let tbody = this.table.querySelector('tbody');
     let inputsReturn = [];
     corpo.forEach((trData) => {
       let tr = document.createElement("tr");
@@ -55,7 +55,7 @@ export class Tabela {
         if (typeof tdData.text === 'string') tdText.handle({ td, tdData });
         if (typeof tdData.input === 'string') tdInput.handle({ prefix, td, tdData, inputs: inputsItem });
         if (typeof tdData.button === 'string') tdButton.handle({ prefix, td, tdData });
-        this._criarConfig({ td, tdData });
+        this._criateConfig({ td, tdData });
         tr.prepend(td);
       });
       inputsReturn.push(inputsItem);
@@ -63,13 +63,13 @@ export class Tabela {
     return inputsReturn;
   }
 
-  _criarConfig({ td, tdData }) {
+  _criateConfig({ td, tdData }) {
     if (tdData.col) td.colSpan = tdData.col;
     if (tdData.row) td.rowSpan = tdData.row;
   }
 
-  getInputsCabecalho() {
-    return this.inputsCabecalho.reverse();
+  getInputsTHead() {
+    return this.inputsTHead.reverse();
   }
 }
 

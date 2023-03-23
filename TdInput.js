@@ -6,9 +6,9 @@ class TdInput {
         let input = document.createElement("input");
         inputs.push(input);
         elementAuxiliar.setData(input, tdData);
-        this._processarId({ prefix, input, tdData });
+        this._processId({ prefix, input, tdData });
         this._callbacks({ input, tdData });
-        input.id = this._processarId({ prefix, tdData });
+        input.id = this._processId({ prefix, tdData });
 
         input.classList.add("form-control");
         input.title = tdData.input;
@@ -29,7 +29,7 @@ class TdInput {
         }
     }
 
-    _processarId({ prefix, tdData }) {
+    _processId({ prefix, tdData }) {
         if (tdData.iden) {
             return prefix + '_' + tdData.iden;
         }
@@ -41,7 +41,7 @@ class TdInput {
     }
 
     setValueFloat(float, limit = false) {
-        float = limit ? Arredondar(float, limit) : float;
+        float = limit ? roundFloat(float, limit) : float;
         this.value = String(float).replace('.', ',');
     }
 
@@ -85,7 +85,7 @@ function keyInputFloat(event) {
     console.log(event);
     if (['deleteContentBackward', 'deleteContentForward'].includes(event.inputType)) return;
     if (['insertLineBreak'].includes(event.inputType)) return focarInputPosterior(event);
-    let qtPonto = contarCaracteres(event.target.value, '.');
+    let qtPonto = countChar(event.target.value, '.');
     if (event.data === '.' || parseInt(event.data, 10) < 10) {
         if (qtPonto === 1 && event.data === '.') event.preventDefault();
         return;
@@ -96,7 +96,7 @@ function keyInputFloat(event) {
         return;
     }
     if (event.data === '-' && event.target.dataset.float_negativo === 'true') {
-        let qtNegativo = contarCaracteres(event.target.value, '-');
+        let qtNegativo = countChar(event.target.value, '-');
         if (qtNegativo === 0) return;
     }
     event.preventDefault();
@@ -120,7 +120,7 @@ function keyInputInt(event) {
     event.preventDefault();
 }
 
-function String_to_float(valorString) {
+function stringByFloat(valorString) {
     if (valorString === '') return '';
     let float = valorString.replaceAll('.', '');
     float = parseFloat(float.replace(',', '.'));
@@ -135,10 +135,10 @@ function focarInputPosterior(event) {
     }
 }
 
-function Float_to_string(valorFloat, qtDecimal = false) {
-    valorFloat = qtDecimal ? Arredondar(valorFloat, qtDecimal) : valorFloat;
+function floatByString(valorFloat, qtDecimal = false) {
+    valorFloat = qtDecimal ? roundFloat(valorFloat, qtDecimal) : valorFloat;
     let valorString = valorFloat.toString();
-    let qt = this._contarCaracteres(valorString, '.');
+    let qt = countChar(valorString, '.');
     if (qt === 1) {
         valorString = valorString.replaceAll(',', '');
         valorString = valorString.replaceAll('.', ',');
@@ -146,7 +146,7 @@ function Float_to_string(valorFloat, qtDecimal = false) {
     return valorString;
 }
 
-function Arredondar(valorFloat, qtDecimal) {
+function roundFloat(valorFloat, qtDecimal) {
     if (qtDecimal && qtDecimal > 0) {
         let valorRedondar = 10;
         for (let i = 1; i < qtDecimal; i++) {
@@ -158,7 +158,7 @@ function Arredondar(valorFloat, qtDecimal) {
 }
 
 
-function contarCaracteres(valorString, letraAlvo) {
+function countChar(valorString, letraAlvo) {
     let resultado = 0;
     for (const letraAtual of valorString) {
         if (letraAtual === letraAlvo) {
