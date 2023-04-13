@@ -1,38 +1,28 @@
-import { elementAuxiliar } from './ElementAuxiliar.js';
+import { templateButton } from './Template/TemplateButton.js';
 
 class TdButton {
-    handle({ prefix, td, tdData }) {
-        let button = document.createElement("button");
-        button.type = "button";
-        button.innerText = tdData.button;
-        if (tdData.callback) {
-            button.removerTrs = this.removerTrs;
-            button.dataset.prefix = prefix;
-            button.addEventListener('click', tdData.callback);
-        }
-        elementAuxiliar.setData(button, tdData);
-        this.typeCustom(button, tdData);
-        td.appendChild(button);
+  handle({ prefix, td, dataObjet }) {
+    this.prefix = prefix;
+    this.td = td;
+    this.dataObjet = dataObjet;
+    this.button = document.createElement("button");
+    templateButton.handle(this.button, this.td, this.dataObjet);
+    if (this.dataObjet.tabIndex) this.button.tabIndex = this.dataObjet.tabIndex;
+    this.button.dataset.prefix = this.prefix;
+    if (this.dataObjet.callback) {
+      this.button.id_item = this.dataObjet.id ?? undefined;
+      this.button.removerTrs = this.removerTrs;
+      this.button.addEventListener('click', this.dataObjet.callback);
     }
+    this.td.appendChild(this.button);
+  }
 
-    typeCustom(button, { typeCustom = 'Add' }) {
-        if (typeCustom === 'Add') {
-            button.classList.add("btn", "btn-primary");
-            button.innerText = button.innerText + '+';
-        }
-        if (typeCustom === 'Remover') {
-            button.classList.add("btn", "btn-danger");
-            button.innerText = button.innerText + '-';
-        }
-    }
-
-    removerTrs(event) {
-        let prefixTr = event.target.dataset.prefix;
-        let trs = [...document.querySelectorAll(`tr[data-prefix="${prefixTr}"]`)];
-        trs.forEach(tr => {
-            tr.parentElement.removeChild(tr);
-        });
-    }
+  removerTrs(prefix) {
+    let trs = [...document.querySelectorAll(`tr[data-prefix="${prefix}"]`)];
+    trs.forEach(tr => {
+      tr.parentElement.removeChild(tr);
+    });
+  }
 }
 
 export const tdButton = new TdButton;
